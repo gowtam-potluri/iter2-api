@@ -1,0 +1,119 @@
+scalar GraphQLDate
+
+enum AvailableType {
+  True
+  False
+}
+type IssueListWithPages {
+  issues: [Issue!]!
+  pages: Int
+}
+type PatIssueListWithPages {
+  issues: [PatIssue!]!
+  pages: Int
+}
+type Issue {
+  _id: ID!
+  id: Int!
+  district: String!
+  available: AvailableType!
+  name: String
+  quantity: Int
+  created: GraphQLDate!
+  phone: String
+  description: String
+}
+
+type PatIssue {
+  _id: ID!
+  id: Int!
+  district: String!
+  helpreq: AvailableType!
+  name: String
+  quantity: Int
+  created: GraphQLDate!
+  phone: String
+  description: String
+}
+
+"Toned down Issue, used as inputs, without server generated values."
+input ResIssueInputs {
+  district: String!
+  "Optional, if not supplied, will be set to 'New'"
+  available: AvailableType = False
+  name: String
+  quantity: Int
+  phone: String
+  description: String
+}
+
+input PatIssueInputs {
+  district: String!
+  "Optional, if not supplied, will be set to 'New'"
+  helpreq: AvailableType = False
+  name: String
+  quantity: Int
+  phone: String
+  description: String
+}
+
+"""Inputs for issueUpdate: all are optional. Whichever is specified will
+be set to the given value, undefined fields will remain unmodified."""
+input ResIssueUpdateInputs {
+  district: String
+  available: AvailableType
+  name: String
+  quantity: Int
+  phone: String
+  description: String
+}
+input PatIssueUpdateInputs {
+  district: String
+  helpreq: AvailableType
+  name: String
+  quantity: Int
+  phone: String
+  description: String
+}
+
+type User {
+  signedIn: Boolean!
+  givenName: String
+  name: String
+  email: String
+}
+
+##### Top level declarations
+
+type Query {
+  about: String!
+  user: User!
+  resList(
+    available: AvailableType
+    effortMin: Int
+    effortMax: Int
+    search: String
+    page: Int = 1
+  ): IssueListWithPages
+  patList(
+    helpreq: AvailableType
+    effortMin: Int
+    effortMax: Int
+    search: String
+    page: Int = 1
+  ): PatIssueListWithPages
+  issue(id: Int!): Issue!
+  patissue(id: Int!): PatIssue!
+}
+
+type Mutation {
+  setAboutMessage(message: String!): String
+  resissueAdd(issue: ResIssueInputs!): Issue!
+  resissueUpdate(id: Int!, changes: ResIssueUpdateInputs!): Issue!
+  resissueDelete(id: Int!): Boolean!
+  patissueAdd(issue: PatIssueInputs!): Issue!
+  patissueUpdate(id: Int!, changes: PatIssueUpdateInputs!): PatIssue!
+  patissueDelete(id: Int!): Boolean!
+  resissueRestore(id: Int!): Boolean!
+  patissueRestore(id: Int!): Boolean!
+}
