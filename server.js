@@ -6,7 +6,7 @@ const { installHandler } = require('./api_handler.js');
 const auth = require('./auth.js');
 
 const app = express();
-const test;
+
 app.use(cookieParser());
 app.use('/auth', auth.routes);
 installHandler(app);
